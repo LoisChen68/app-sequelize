@@ -1,4 +1,5 @@
 const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
 const { User } = require('../models')
 
 const userController = {
@@ -35,6 +36,17 @@ const userController = {
         errorCode: '400E',
         message: 'email already exists'
       })
+    }
+    catch (err) {
+      next(err)
+    }
+  },
+  // POST users/login
+  login: (req, res, next) => {
+    try {
+      const userData = req.user.toJSON()
+      const token = jwt.sign(userData, process.env.JWT_SECRET, { expiresIn: '7d' })
+      res.json({ token })
     }
     catch (err) {
       next(err)
